@@ -1,0 +1,28 @@
+version: '3' # menggunakan Docker Compose versi 3
+
+# mendefinisikan service
+services:
+  item-app:
+    # menggunakan image dari github packages
+    image: ghcr.io/dhichii/item-app:v1
+    # restart policy agar selalu restart setiap container mati
+    restart: always
+    # memastikan item-app hanya berjalan setelah item-db diluncurkan
+    depends_on:
+      - item-db
+    # menentukan port dari container
+    ports:
+      - 80:8080
+
+  item-db:
+    # menggunakan image mongo versi 3 dari Docker Hub
+    image: mongo:3
+    # restart policy agar selalu restart setiap container mati
+    restart: always
+    # memakai volume bernama app-db dengan target /data/db
+    volumes:
+      - app-db:/data/db
+
+# mendefinisikan volume bernama app-db
+volumes:
+  app-db:
