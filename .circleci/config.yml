@@ -1,0 +1,22 @@
+# menentukan versi CircleCI pipeline
+version: 2.1
+# mendefinisikan langkah alur kerja
+jobs:
+  build:
+    # mendefinisikan image
+    docker:
+      - image: cimg/node:14.21
+    # menentukan langkah-langkah alur kerja
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      # job lint-dockerfile untuk menginstall hadolint dan menjalankannya dari file Dockerfile
+      - run:
+          name: lint-dockerfile
+          command: docker run --rm --interactive hadolint/hadolint < Dockerfile
+
+      # job build-app-karsajobs untuk build dan push image ke Github Packages
+      - run:
+          name: build-app-karsajobs
+          command: ./build_push_image_karsajobs_ui.sh
