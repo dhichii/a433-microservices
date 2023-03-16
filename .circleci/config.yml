@@ -1,0 +1,31 @@
+# menentukan versi CircleCI pipeline
+version: 2.1
+# mendefinisikan langkah alur kerja
+jobs:
+  build:
+    # mendefinisikan image
+    docker:
+      - image: cimg/go:1.15
+    environment:
+      GO111MODULE: "on"
+      APP_PORT: 8080
+    # menentukan langkah-langkah alur kerja
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      # job lint-dockerfile untuk menginstall hadolint dan menjalankannya dari file Dockerfile
+      - run:
+          name: lint-dockerfile
+          command: docker run --rm --interactive hadolint/hadolint < Dockerfile
+
+      # job test-app untuk menjalankan unit test
+      - run:
+          name: test-app
+          command: |
+            go mod download
+            go test -v -short --count=1 $(go list ./...)
+      # job build-app-karsajobs untuk build dan push image ke Github Packages
+      - run:
+          name: build-app-karsajobs
+          command: ./build_push_image_karsajobs.sh
