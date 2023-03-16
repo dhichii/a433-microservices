@@ -1,0 +1,17 @@
+# mendefinisikan versi api
+apiVersion: v1
+# mendefinisikan resource service
+kind: Service
+# mendefinisikan nama dan label
+metadata:
+  name: mongo-service
+  labels:
+    app: database
+# mendefinisikan spec
+spec:
+  # mengekspos port
+  ports:
+    - port: 27017
+  # menargetkan pod dengan label app database
+  selector:
+    app: database

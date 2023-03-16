@@ -1,0 +1,41 @@
+# mendefinisikan versi api
+apiVersion: apps/v1
+# mendefinisikan resource deployment
+kind: Deployment
+# mendefinisikan nama dan label
+metadata:
+  name: karsajobs-ui-deployment
+  labels:
+    app: karsajobs-ui-deployment
+# menentukan spec
+spec:
+  # menentukan jumlah replica
+  replicas: 1
+  # menargetkan pod dengan label app karsajobs-ui
+  selector:
+    matchLabels:
+      app: karsajobs-ui
+  # mendefinisikan template
+  template:
+    metadata:
+      # mendefinisikan label
+      labels:
+        app: karsajobs-ui
+    # menentukan spec
+    spec:
+      # mendefinisikan container
+      containers:
+      - name: karsajobs-ui
+        # mengambil image dari github package
+        image: ghcr.io/dhichii/karsajobs-ui:latest
+        # mengekspos port container
+        ports:
+          - containerPort: 8000
+        # menentukan resource
+        resources:
+          requests:
+            cpu: 20m
+        # menentukan env
+        env:
+          - name: VUE_APP_BACKEND
+            value: "http://127.0.0.1:65009"

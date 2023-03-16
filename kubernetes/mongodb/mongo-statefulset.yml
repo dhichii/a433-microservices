@@ -1,0 +1,66 @@
+# mendefinisikan versi api
+apiVersion: apps/v1
+# mendefinisikan resource statefulset
+kind: StatefulSet
+# mendefinisikan nama
+metadata:
+  name: mongo
+# mendefinisikan spec
+spec:
+  # menargetkan pod dengan label app database
+  selector:
+    matchLabels:
+      app: database
+  # mendefinisikan service
+  serviceName: mongo-service
+  # menentukan jumlah replica
+  replicas: 1
+  # mendefinisikan template
+  template:
+    # menentukan label
+    metadata:
+      labels:
+        app: database
+    # mendefinisikan spec
+    spec:
+      # mendefinisikan container
+      containers:
+      # mengambil image mongo
+      - image: mongo
+        name: mongo
+        # mendefinisikan env
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+        # mengekspos port
+        ports:
+        - containerPort: 27017
+        # mendefinisikan mount volume
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+        - name: mongo-config
+          mountPath: /config
+        - name: mongo-credentials
+          mountPath: /etc/mongo-credentials
+      # mendefinisikan volume
+      volumes:
+      - name: mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+      - name: mongo-config
+        configMap:
+          name: mongo-config
+          items:
+            - key: mongo.conf
+              path: mongo.conf
+      - name: mongo-credentials
+        secret:
+          secretName: mongo-secret
+          items:
+            - key: MONGO_ROOT_USERNAME
+              path: MONGO_ROOT_USERNAME
+            - key: MONGO_ROOT_PASSWORD
+              path: MONGO_ROOT_PASSWORD

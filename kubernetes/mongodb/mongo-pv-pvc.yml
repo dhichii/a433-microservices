@@ -1,0 +1,37 @@
+# mendefinisikan versi api
+apiVersion: v1
+# mendefinisikan resource persistentvolume
+kind: PersistentVolume
+# mendefinisikan nama
+metadata:
+  name: mongo-pv
+# menentukan spec
+spec:
+  storageClassName: manual
+  # menentukan kapasitas
+  capacity:
+    storage: 1Gi
+  # menentukan mode akses
+  accessModes:
+    - ReadWriteOnce
+  # menentukan path host data
+  hostPath:
+    path: "/data/mongo"
+---
+# mendefinisikan versi api
+apiVersion: v1
+# mendefinisikan resource persistentvolumeclaim
+kind: PersistentVolumeClaim
+# mendefinisikan nama
+metadata:
+  name: mongo-pvc
+# menentukan spec
+spec:
+  storageClassName: manual
+  # menentukan mode akses
+  accessModes:
+    - ReadWriteOnce
+  # mendefinisikan resource
+  resources:
+    requests:
+      storage: 1Gi

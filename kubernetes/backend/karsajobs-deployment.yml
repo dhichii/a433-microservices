@@ -1,0 +1,51 @@
+# mendefinisikan tipe api
+apiVersion: apps/v1
+# mendefinisikan resource deployment
+kind: Deployment
+# mendefinisikan nama
+metadata:
+  name: karsajobs-deployment
+# menentukan spec
+spec:
+  # menentukan jumlah replica
+  replicas: 1
+  # menargetkan pod yang memiliki label app karsajobs
+  selector:
+    matchLabels:
+      app: karsajobs
+  # mendefinisikan template
+  template:
+    metadata:
+      # mendefinisikan label
+      labels:
+        app: karsajobs
+    # menentukan spec
+    spec:
+      # mendefinisikan container
+      containers:
+      - name: karsajobs
+        # mengambil image dari github package
+        image: ghcr.io/dhichii/karsajobs:latest
+        # mengekspos port container
+        ports:
+          - containerPort: 8080
+        # menentukan resource
+        resources:
+          requests:
+            cpu: 20m
+        # menentukan env
+        env:
+          - name: APP_PORT
+            value: "8080"
+          - name: MONGO_HOST
+            value: mongo-service
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: MONGO_ROOT_USERNAME
+          - name: MONGO_PASS
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: MONGO_ROOT_PASSWORD

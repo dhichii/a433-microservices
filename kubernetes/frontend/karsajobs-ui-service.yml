@@ -1,0 +1,19 @@
+# mendefinisikan versi api
+apiVersion: v1
+# mendefinisikan resource service
+kind: Service
+# mendefinisikan nama dan label
+metadata:
+  labels: 
+    app: karsajobs-ui-service
+  name: karsajobs-ui-service
+# menentukan spec
+spec:
+# mengekspos port
+  ports:
+    - port: 8000
+# menargetkan pod yang memiliki label app karsajobs-ui
+  selector:
+    app: karsajobs-ui
+# mendefinisikan tipe nodeport
+  type: NodePort

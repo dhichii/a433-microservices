@@ -1,0 +1,19 @@
+# mendefinisikan versi api
+apiVersion: v1
+# mendefinisikan resource service
+kind: Service
+# mendefinisikan nama dan label
+metadata:
+  labels:
+    app: karsajobs-service
+  name: karsajobs-service
+# menentukan spec
+spec:
+  # mengekspos port
+  ports:
+    - port: 8080
+  # menargetkan pod yang memiliki label app karsajobs
+  selector:
+    app: karsajobs
+  # mendefinisikan tipe cluster ip
+  type: ClusterIP
